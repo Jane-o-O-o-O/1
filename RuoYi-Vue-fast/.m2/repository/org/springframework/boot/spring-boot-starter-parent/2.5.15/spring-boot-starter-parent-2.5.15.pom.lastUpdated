@@ -1,0 +1,6 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Sat Mar 14 20:19:32 CST 2026
+@default-central-https\://repo.maven.apache.org/maven2/.lastUpdated=1773490772434
+@default-public-https\://maven.aliyun.com/repository/public/.lastUpdated=1773490772346
+https\://maven.aliyun.com/repository/public/.error=Could not transfer artifact org.springframework.boot\:spring-boot-starter-parent\:pom\:2.5.15 from/to public (https\://maven.aliyun.com/repository/public)\: Permission denied\: getsockopt
+https\://repo.maven.apache.org/maven2/.error=Could not transfer artifact org.springframework.boot\:spring-boot-starter-parent\:pom\:2.5.15 from/to central (https\://repo.maven.apache.org/maven2)\: Permission denied\: getsockopt
