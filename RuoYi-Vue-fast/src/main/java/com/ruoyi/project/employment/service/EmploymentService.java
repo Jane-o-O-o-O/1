@@ -655,6 +655,32 @@ public class EmploymentService
         return listAssistanceRecords(record).stream().findFirst().orElse(record);
     }
 
+    @Transactional
+    public void deleteAssistanceRecord(Long recordId, Long helperUserId, String operator)
+    {
+        Long studentUserId = jdbcTemplate.query("select student_user_id from emp_assistance_record where record_id = ? and del_flag = '0'",
+            rs -> rs.next() ? rs.getLong(1) : null, recordId);
+        if (studentUserId == null)
+        {
+            return;
+        }
+
+        StringBuilder sql = new StringBuilder("update emp_assistance_record set del_flag = '2', update_by = ?, update_time = now() where record_id = ? and del_flag = '0'");
+        List<Object> params = new ArrayList<>();
+        params.add(operator);
+        params.add(recordId);
+        if (helperUserId != null)
+        {
+            sql.append(" and helper_user_id = ?");
+            params.add(helperUserId);
+        }
+        int rows = jdbcTemplate.update(sql.toString(), params.toArray());
+        if (rows > 0)
+        {
+            rebuildRisk(studentUserId, operator);
+        }
+    }
+
     public List<EmploymentWarningVO> listWarnings(Long teacherUserId, EmploymentWarningVO query)
     {
         StringBuilder sql = new StringBuilder("select es.student_user_id, su.nick_name student_name, sp.student_no, sp.major_name, sp.class_name, tu.nick_name teacher_name, es.warning_level, es.difficulty_level, es.risk_score, es.reason_note, (select count(1) from emp_job_application a where a.student_user_id = es.student_user_id and a.del_flag = '0') application_count, (select count(1) from emp_resume r where r.user_id = es.student_user_id and r.del_flag = '0') resume_version_count from emp_employment_status es left join sys_user su on su.user_id = es.student_user_id left join emp_student_profile sp on sp.user_id = es.student_user_id and sp.del_flag = '0' left join sys_user tu on tu.user_id = es.teacher_user_id where es.del_flag = '0'");

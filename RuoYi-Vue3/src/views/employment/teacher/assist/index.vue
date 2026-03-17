@@ -8,6 +8,11 @@
       <el-table-column label="内容" prop="activityContent" min-width="220" />
       <el-table-column label="成效" prop="resultSummary" min-width="180" />
       <el-table-column label="时间" prop="recordTime" min-width="180" />
+      <el-table-column label="操作" align="center" width="140">
+        <template #default="{ row }">
+          <el-button link type="success" @click="handleComplete(row)">此帮扶已完成</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <el-dialog v-model="open" title="帮扶记录" width="680px">
@@ -37,7 +42,7 @@
 </template>
 
 <script setup name="EmploymentTeacherAssist">
-import { addAssist, listAssists, listStatuses } from '@/api/employment'
+import { addAssist, deleteAssist, listAssists, listStatuses } from '@/api/employment'
 import { parseTime } from '@/utils/ruoyi'
 
 const { proxy } = getCurrentInstance()
@@ -75,6 +80,13 @@ function submit() {
     open.value = false
     loadData()
   })
+}
+
+function handleComplete(row) {
+  proxy.$modal.confirm(`确认将“${row.activityTitle || '该帮扶记录'}”标记为已完成并删除吗？`).then(() => deleteAssist(row.recordId)).then(() => {
+    proxy.$modal.msgSuccess('删除成功')
+    loadData()
+  }).catch(() => {})
 }
 
 loadData()

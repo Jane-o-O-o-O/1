@@ -132,6 +132,10 @@ export function addAssist(data) {
   return request({ url: '/employment/assist', method: 'post', data })
 }
 
+export function deleteAssist(recordId) {
+  return request({ url: `/employment/assist/${recordId}`, method: 'delete' })
+}
+
 export function listWarnings(params) {
   return request({ url: '/employment/warning/list', method: 'get', params })
 }

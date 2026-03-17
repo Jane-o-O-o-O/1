@@ -339,6 +339,14 @@ public class EmploymentController extends BaseController
         return success(employmentService.saveAssistanceRecord(record, getUsername()));
     }
 
+    @PreAuthorize("@ss.hasPermi('employment:teacher:assist') or @ss.hasPermi('employment:admin:status')")
+    @DeleteMapping("/assist/{recordId}")
+    public AjaxResult deleteAssist(@PathVariable Long recordId)
+    {
+        employmentService.deleteAssistanceRecord(recordId, hasRole("teacher") ? getUserId() : null, getUsername());
+        return success();
+    }
+
     @GetMapping("/warning/list")
     public TableDataInfo warningList(EmploymentWarningVO query)
     {
